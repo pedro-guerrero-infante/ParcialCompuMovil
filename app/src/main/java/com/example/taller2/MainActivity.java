@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText textoCorreo;
     private EditText textoContraseña;
 
+    //Comentarios jajajajaja
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
