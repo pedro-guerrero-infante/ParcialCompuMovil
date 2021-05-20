@@ -8,6 +8,20 @@
     android:padding="10dp"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/etCorreo"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        />
+
+    <EditText
+        android:id="@+id/etContraseña"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etCorreo"
+        />
+
     <Button
         android:id="@+id/bRegistrarse"
         android:layout_width="wrap_content"
@@ -23,6 +37,7 @@
         android:text="Iniciar Sesión"
         android:layout_centerInParent="true"
         android:layout_below="@id/bRegistrarse"
+        android:onClick="iniciarSesion"
         />
 
 </RelativeLayout>
