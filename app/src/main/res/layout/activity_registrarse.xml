@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Registrarse"
-    android:background="@drawable/cartelluffy">
+    android:background="@drawable/fondoprincipal">
 
     <TextView
         android:id="@+id/logo"
@@ -41,16 +41,11 @@
             app:layout_constraintTop_toBottomOf="@+id/logo">
 
             <EditText
-                android:id="@+id/inputUsername"
-                android:layout_width="340dp"
+                android:id="@+id/usuario"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginEnd="2dp"
                 android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
                 android:hint="Usuario"
                 android:inputType="textPersonName"
                 android:paddingLeft="20dp"
@@ -59,42 +54,44 @@
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
                 android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/logo"
-                android:layout_marginRight="32dp"
-                android:layout_marginLeft="2dp" />
+                />
 
             <EditText
-                android:id="@+id/inputNombre"
+                android:id="@+id/nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
-                android:hint="Nombre Completo"
+                android:hint="Nombre"
                 android:inputType="textPersonName"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputUsername"
-                app:layout_constraintStart_toStartOf="@+id/inputUsername"
-                app:layout_constraintTop_toBottomOf="@+id/inputUsername" />
+                android:textColorHint="#fff" />
 
             <EditText
-                android:id="@+id/inputEmail"
+                android:id="@+id/apellido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
+                android:hint="Apellido"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff" />
 
-                android:drawablePadding="10dp"
-                android:ems="10"
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_bg"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="20dp"
@@ -102,41 +99,29 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputNombre"
-                app:layout_constraintStart_toStartOf="@+id/inputNombre"
-                app:layout_constraintTop_toBottomOf="@+id/inputNombre" />
+                android:textColorHint="#fff" />
 
             <EditText
-                android:id="@+id/inputCelular"
+                android:id="@+id/cedula"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
-                android:hint="Celular"
+                android:hint="Cedula"
                 android:inputType="number"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputEmail"
-                app:layout_constraintStart_toStartOf="@+id/inputEmail"
-                app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+                android:textColorHint="#fff" />
 
             <EditText
-                android:id="@+id/inputClave"
+                android:id="@+id/clave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
                 android:hint="Clave"
                 android:inputType="textPassword"
                 android:paddingLeft="20dp"
@@ -144,20 +129,14 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputCelular"
-                app:layout_constraintStart_toStartOf="@+id/inputCelular"
-                app:layout_constraintTop_toBottomOf="@+id/inputCelular" />
+                android:textColorHint="#fff" />
 
             <EditText
-                android:id="@+id/inputConfirmarClave"
+                android:id="@+id/confirmarClave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
                 android:hint="Repetir Clave"
                 android:inputType="textPassword"
                 android:paddingLeft="20dp"
@@ -165,31 +144,7 @@
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputClave"
-                app:layout_constraintStart_toStartOf="@+id/inputClave"
-                app:layout_constraintTop_toBottomOf="@+id/inputClave" />
-
-            <EditText
-                android:id="@+id/inputDireccion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/input_bg"
-
-                android:drawablePadding="10dp"
-                android:ems="10"
-                android:hint="Dirección"
-                android:inputType="textPersonName"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                android:textColor="#fff"
-                android:textColorHint="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/inputConfirmarClave"
-                app:layout_constraintStart_toStartOf="@+id/inputConfirmarClave"
-                app:layout_constraintTop_toBottomOf="@+id/inputConfirmarClave" />
+                android:textColorHint="#fff" />
 
             <Button
                 android:id="@+id/btnRegistrar"
@@ -198,9 +153,7 @@
                 android:layout_marginTop="24dp"
                 android:onClick="registrarse"
                 android:text="Registrarse"
-                app:layout_constraintEnd_toEndOf="@+id/inputDireccion"
-                app:layout_constraintStart_toStartOf="@+id/inputDireccion"
-                app:layout_constraintTop_toBottomOf="@+id/inputDireccion" />
+                />
 
             <TextView
                 android:id="@+id/btnYaTengoCuenta"
@@ -210,9 +163,8 @@
                 android:shadowColor="#fff"
                 android:text="Ya tienes cuenta?"
                 android:textColor="#fff"
-                app:layout_constraintEnd_toEndOf="@+id/btnRegistrar"
-                app:layout_constraintStart_toStartOf="@+id/btnRegistrar"
-                app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
+                android:onClick="yaTengoCuenta"
+              />
 
         </LinearLayout>
 

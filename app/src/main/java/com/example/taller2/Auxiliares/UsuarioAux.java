@@ -4,22 +4,26 @@ public class UsuarioAux
 {
     private String usuario;
     private String nombre;
+    private String apellido;
     private String email;
-    String celular;
-    String clave;
-    String direccion;
+    private String cedula;
+    private String clave;
+    private String latitud;
+    private String longitud;
 
     public UsuarioAux() {
 
     }
 
-    public UsuarioAux(String usuario, String nombre, String email, String celular, String clave, String direccion) {
-        this.usuario = usuario;
-        this.nombre = nombre;
-        this.email = email;
-        this.celular = celular;
-        this.clave = clave;
-        this.direccion = direccion;
+    public UsuarioAux(String usuarioP, String nombreP, String apellidoP, String emailP, String cedulaP, String claveP, String latitudP, String longitudP) {
+        this.usuario = usuarioP;
+        this.nombre = nombreP;
+        this.apellido = apellidoP;
+        this.email = emailP;
+        this.cedula = cedulaP;
+        this.clave = claveP;
+        this.latitud = latitudP;
+        this.longitud = longitudP;
     }
 
     public String getUsuario() {
@@ -38,6 +42,14 @@ public class UsuarioAux
         this.nombre = nombre;
     }
 
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -46,12 +58,12 @@ public class UsuarioAux
         this.email = email;
     }
 
-    public String getCelular() {
-        return celular;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setCelular(String celular) {
-        this.celular = celular;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getClave() {
@@ -62,11 +74,19 @@ public class UsuarioAux
         this.clave = clave;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getLatitud() {
+        return latitud;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    public String getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
     }
 }
