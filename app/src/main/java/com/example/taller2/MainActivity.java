@@ -8,6 +8,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textoCorreo;
     private EditText textoContraseña;
 
-    //Comentarios jajajajaja
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void iniciarSesion() {
+    public void iniciarSesion(final View view) {
         signInUser(textoCorreo.getText().toString(), textoContraseña.getText().toString());
     }
     @Override
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser){
         if(currentUser!=null){
+
             Intent intent = new Intent(getBaseContext(), Home.class);
             intent.putExtra("user", currentUser.getEmail());
             startActivity(intent);
