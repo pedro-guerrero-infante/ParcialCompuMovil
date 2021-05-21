@@ -1,35 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
-    tools:context=".Registrarse">
+    tools:context=".Registrarse"
+    android:background="@drawable/cartelluffy">
 
-    <EditText
-        android:id="@+id/etApellido"
-        android:layout_width="340dp"
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:text="Registro"
+        android:textColor="#fff"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.036" />
 
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="340dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        />
-    <EditText
-        android:id="@+id/etNombre"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo">
+
+            <EditText
+                android:id="@+id/inputUsername"
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Usuario"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logo"
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="2dp" />
+
+            <EditText
+                android:id="@+id/inputNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Nombre Completo"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputUsername"
+                app:layout_constraintStart_toStartOf="@+id/inputUsername"
+                app:layout_constraintTop_toBottomOf="@+id/inputUsername" />
+
+            <EditText
+                android:id="@+id/inputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputNombre"
+                app:layout_constraintStart_toStartOf="@+id/inputNombre"
+                app:layout_constraintTop_toBottomOf="@+id/inputNombre" />
+
+            <EditText
+                android:id="@+id/inputCelular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Celular"
+                android:inputType="number"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputEmail"
+                app:layout_constraintStart_toStartOf="@+id/inputEmail"
+                app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+
+            <EditText
+                android:id="@+id/inputClave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Clave"
+                android:inputType="textPassword"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputCelular"
+                app:layout_constraintStart_toStartOf="@+id/inputCelular"
+                app:layout_constraintTop_toBottomOf="@+id/inputCelular" />
+
+            <EditText
+                android:id="@+id/inputConfirmarClave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Repetir Clave"
+                android:inputType="textPassword"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputClave"
+                app:layout_constraintStart_toStartOf="@+id/inputClave"
+                app:layout_constraintTop_toBottomOf="@+id/inputClave" />
+
+            <EditText
+                android:id="@+id/inputDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"
+
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Dirección"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/inputConfirmarClave"
+                app:layout_constraintStart_toStartOf="@+id/inputConfirmarClave"
+                app:layout_constraintTop_toBottomOf="@+id/inputConfirmarClave" />
+
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:onClick="registrarse"
+                android:text="Registrarse"
+                app:layout_constraintEnd_toEndOf="@+id/inputDireccion"
+                app:layout_constraintStart_toStartOf="@+id/inputDireccion"
+                app:layout_constraintTop_toBottomOf="@+id/inputDireccion" />
+
+            <TextView
+                android:id="@+id/btnYaTengoCuenta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:shadowColor="#fff"
+                android:text="Ya tienes cuenta?"
+                android:textColor="#fff"
+                app:layout_constraintEnd_toEndOf="@+id/btnRegistrar"
+                app:layout_constraintStart_toStartOf="@+id/btnRegistrar"
+                app:layout_constraintTop_toBottomOf="@+id/btnRegistrar" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
