@@ -1,7 +1,10 @@
 package com.example.taller2.Auxiliares;
 
-public class UsuarioAux {
-    String usuario, nombre,email;
+public class UsuarioAux
+{
+    private String usuario;
+    private String nombre;
+    private String email;
     String celular;
     String clave;
     String direccion;
