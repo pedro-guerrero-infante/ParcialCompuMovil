@@ -69,8 +69,10 @@ public class Registrarse extends AppCompatActivity {
         final String password = clave.getText().toString();
         final String dir = direccion.getText().toString();
         String valClave = repetirClave.getText().toString();
+
         int cantidad = password.length();
         boolean bandera = false;
+
         if (usuarios.isEmpty()){
             mostrarError(usuario,"Debes llenar este campo");
         }
@@ -89,30 +91,31 @@ public class Registrarse extends AppCompatActivity {
         if (dir.isEmpty()){
             mostrarError(direccion,"Debes llenar este campo");
         }
-
         else{
             bandera = true;
         }
 
         if(bandera == true){
-
-
             firebaseAuth = FirebaseAuth.getInstance();
 
             firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if(task.isSuccessful())
+                    {
                         UsuarioAux usuarioAux = new UsuarioAux(usuarios,nombres,email,cel,password,dir);
                         databaseReference.child(usuarios).setValue(usuarioAux);
+
                         Toast.makeText(Registrarse.this,"Usuario Registrado.....",Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(Registrarse.this,Home.class);
+
                         intent.putExtra("usuario",usuarios);
                         intent.putExtra("nombre",nombres);
                         intent.putExtra("direccion",dir);
                         intent.putExtra("email",email);
                         intent.putExtra("clave",password);
                         intent.putExtra("celular",cel);
+
                         startActivity(intent);
 
                     }
@@ -124,8 +127,6 @@ public class Registrarse extends AppCompatActivity {
                     }
                 }
             });
-
-
         }
     }
 }
