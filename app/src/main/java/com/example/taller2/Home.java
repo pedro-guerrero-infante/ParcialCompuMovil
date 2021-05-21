@@ -4,14 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.taller2.Auxiliares.UsuarioAux;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Home extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
+    private String PATH_LOCATION = "locations";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,4 +51,5 @@ public class Home extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

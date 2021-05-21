@@ -12,7 +12,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +23,19 @@ import android.widget.Toast;
 
 import com.example.taller2.Auxiliares.UsuarioAux;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+
 
 public class Registrarse extends AppCompatActivity {
 
@@ -53,12 +63,17 @@ public class Registrarse extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
+    private StorageReference mStorageRef;
+
+    private int IMAGE_PICKER_REQUEST = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrarse);
         sacarUbicacion();
+        permiso();
     }
 
     private void mostrarError(EditText editText, String error){
@@ -187,7 +202,7 @@ public class Registrarse extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else
-                        {
+                    {
                         task.getResult();
                         Toast.makeText(Registrarse.this,task.getResult().toString(),Toast.LENGTH_LONG).show();
 //                      Log.i(task.getResult().toString());
@@ -203,6 +218,47 @@ public class Registrarse extends AppCompatActivity {
         Intent intent = new Intent(v.getContext(), MainActivity.class);
         startActivity(intent);
     }
+
+    public void permiso(){
+        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(this, "Se requiere habilitar los permisos", Toast.LENGTH_SHORT).show();
+            }
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    public void escogerImagen(View v) {
+        Toast.makeText(v.getContext(), "Galeria", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_PICKER_REQUEST);
+    }
+    private void uploadFile(){
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        Uri file = Uri.fromFile(new File("path/to/images/image.jpg"));
+        StorageReference imageRef = mStorageRef.child("images/profile/userid/image.jpg");
+        imageRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+// Get a URL to the uploaded content
+                        Log.i("FBApp", "Succesfully upload image");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+// Handle unsuccessful uploads
+// ...
+                    }
+                });
+    }
+
 
     public String getLatitudC() {
         return latitudC;

@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,6 @@
                 android:id="@+id/usuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
                 android:background="@drawable/input_bg"
                 android:hint="Usuario"
                 android:inputType="textPersonName"
@@ -60,7 +58,7 @@
                 android:id="@+id/nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Nombre"
                 android:inputType="textPersonName"
@@ -75,7 +73,7 @@
                 android:id="@+id/apellido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Apellido"
                 android:inputType="textPersonName"
@@ -90,7 +88,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
@@ -105,7 +103,7 @@
                 android:id="@+id/cedula"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Cedula"
                 android:inputType="number"
@@ -120,7 +118,7 @@
                 android:id="@+id/clave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Clave"
                 android:inputType="textPassword"
@@ -135,7 +133,7 @@
                 android:id="@+id/confirmarClave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input_bg"
                 android:hint="Repetir Clave"
                 android:inputType="textPassword"
@@ -146,11 +144,24 @@
                 android:textColor="#fff"
                 android:textColorHint="#fff" />
 
+
+            <ImageView
+                android:id="@+id/imagen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_launcher_foreground" />
+
+            <Button
+                android:id="@+id/bGaleria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="escogerImagen"
+                android:text="Galeria" />
+
             <Button
                 android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:onClick="registrarse"
                 android:text="Registrarse"
                 />
@@ -159,12 +170,12 @@
                 android:id="@+id/btnYaTengoCuenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:shadowColor="#fff"
+                android:layout_gravity="center_horizontal"
                 android:text="Ya tienes cuenta?"
                 android:textColor="#fff"
                 android:onClick="yaTengoCuenta"
-              />
+                />
 
         </LinearLayout>
 
