@@ -6,39 +6,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/fondoprincipal">
 
-    <EditText
-        android:id="@+id/etCorreo"
-        android:layout_width="340dp"
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:text="Login"
+        android:textColor="#fff"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
         />
 
     <EditText
-        android:id="@+id/etContraseña"
-        android:layout_width="340dp"
+        android:id="@+id/etCorreo"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etCorreo"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/input_bg"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="#fff"
+        android:textColorHint="#fff" />
+
+    <EditText
+        android:id="@+id/etContraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/input_bg"
+        android:hint="Clave"
+        android:inputType="textPassword"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="#fff"
+        android:textColorHint="#fff"
+        android:layout_below="@id/etCorreo"/>
+
+    <Button
+        android:id="@+id/bIniciar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Iniciar Sesión"
+        android:layout_marginTop="80dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/etContraseña"
+        android:onClick="iniciarSesion"
         />
 
     <Button
         android:id="@+id/bRegistrarse"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="Registrarse"
         android:layout_centerInParent="true"
         android:onClick="registrarse"
-        />
-
-    <Button
-        android:id="@+id/bIniciar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/bRegistrarse"
-        android:onClick="iniciarSesion"
+        android:layout_below="@id/bIniciar"
         />
 
 </RelativeLayout>
