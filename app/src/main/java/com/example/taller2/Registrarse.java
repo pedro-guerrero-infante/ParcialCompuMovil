@@ -71,41 +71,51 @@ public class Registrarse extends AppCompatActivity {
         String valClave = repetirClave.getText().toString();
 
         int cantidad = password.length();
-        boolean bandera = false;
+        boolean bandera = true;
 
-        if (usuarios.isEmpty()){
+        if (usuarios.isEmpty())
+        {
+            bandera = false;
             mostrarError(usuario,"Debes llenar este campo");
         }
-        if (nombres.isEmpty()){
+        if (nombres.isEmpty())
+        {
+            bandera = false;
             mostrarError(nombre,"Debes llenar este campo");
         }
-        if (email.isEmpty()){
+        if (email.isEmpty())
+        {
+            bandera = false;
             mostrarError(mail,"Debes llenar este campo");
         }
-        if (cel.isEmpty()){
+        if (cel.isEmpty())
+        {
+            bandera = false;
             mostrarError(celular,"Debes llenar este campo");
         }
-        if (password.isEmpty()){
+        if (password.isEmpty())
+        {
+            bandera = false;
             mostrarError(clave,"Debes llenar este campo");
         }
-        if (dir.isEmpty()){
+        if (dir.isEmpty())
+        {
+            bandera = false;
             mostrarError(direccion,"Debes llenar este campo");
         }
-        else{
-            bandera = true;
-        }
 
-        if(bandera == true){
+        if(bandera == true)
+        {
             firebaseAuth = FirebaseAuth.getInstance();
-
-            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+                public void onComplete(@NonNull Task<AuthResult> task)
+                {
                     if(task.isSuccessful())
                     {
                         UsuarioAux usuarioAux = new UsuarioAux(usuarios,nombres,email,cel,password,dir);
                         databaseReference.child(usuarios).setValue(usuarioAux);
-
                         Toast.makeText(Registrarse.this,"Usuario Registrado.....",Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(Registrarse.this,Home.class);
 
@@ -119,7 +129,7 @@ public class Registrarse extends AppCompatActivity {
                         startActivity(intent);
 
                     }
-                    else{
+                    else {
                         task.getResult();
                         Toast.makeText(Registrarse.this,task.getResult().toString(),Toast.LENGTH_LONG).show();
 //                                Log.i(task.getResult().toString());
