@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -143,21 +144,23 @@
                 android:paddingBottom="10dp"
                 android:textColor="#fff"
                 android:textColorHint="#fff" />
-
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imagen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
-
-            <Button
-                android:id="@+id/bGaleria"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="escogerImagen"
-                android:text="Galeria" />
-
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_launcher_foreground"
+                android:onClick="cargarImagen"
+                />
+        </LinearLayout>
             <Button
                 android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
@@ -170,6 +173,7 @@
                 android:id="@+id/btnYaTengoCuenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:shadowColor="#fff"
                 android:layout_gravity="center_horizontal"
                 android:text="Ya tienes cuenta?"
@@ -178,8 +182,5 @@
                 />
 
         </LinearLayout>
-
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

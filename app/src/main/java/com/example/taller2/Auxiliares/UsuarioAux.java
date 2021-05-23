@@ -10,12 +10,13 @@ public class UsuarioAux
     private String clave;
     private String latitud;
     private String longitud;
+    private String foto;
 
     public UsuarioAux() {
 
     }
 
-    public UsuarioAux(String usuarioP, String nombreP, String apellidoP, String emailP, String cedulaP, String claveP, String latitudP, String longitudP) {
+    public UsuarioAux(String usuarioP, String nombreP, String apellidoP, String emailP, String cedulaP, String claveP, String latitudP, String longitudP, String fotoP) {
         this.usuario = usuarioP;
         this.nombre = nombreP;
         this.apellido = apellidoP;
@@ -24,6 +25,7 @@ public class UsuarioAux
         this.clave = claveP;
         this.latitud = latitudP;
         this.longitud = longitudP;
+        this.foto = fotoP;
     }
 
     public String getUsuario() {
@@ -88,5 +90,13 @@ public class UsuarioAux
 
     public void setLongitud(String longitud) {
         this.longitud = longitud;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }

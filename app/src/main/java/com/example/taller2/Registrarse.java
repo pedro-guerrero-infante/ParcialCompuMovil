@@ -1,41 +1,41 @@
 package com.example.taller2;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.taller2.Auxiliares.UsuarioAux;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-
 
 public class Registrarse extends AppCompatActivity {
 
@@ -63,17 +63,21 @@ public class Registrarse extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
-    private StorageReference mStorageRef;
-
-    private int IMAGE_PICKER_REQUEST = 1;
-
+    //---------------------------------------------------------------------------------------
+    private StorageReference storageReference;
+    private Uri imagenUri;
+    private ImageView imagen;
+    //---------------------------------------------------------------------------------------
+    private Boolean bandera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrarse);
         sacarUbicacion();
-        permiso();
+
+        imagen = findViewById(R.id.imagen);
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     private void mostrarError(EditText editText, String error){
@@ -89,7 +93,6 @@ public class Registrarse extends AppCompatActivity {
         {
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION))
             {
-
             }
             else
             {
@@ -115,6 +118,51 @@ public class Registrarse extends AppCompatActivity {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
     }
 
+    //-----------------------------------------------------------------------------------------------------------
+
+    public void cargarImagen(View v)
+    {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                String [] permiso = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                requestPermissions(permiso,1001);
+            }
+            else{
+                escogerImagenGaleria();
+            }
+        }
+        else {
+            escogerImagenGaleria();
+        }
+    }
+
+    private void escogerImagenGaleria() {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent,1000);
+
+    }
+
+    //Este codigo es para seleccionar la imagen y que salga en la pantalla
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 1000) {
+
+            imagenUri = data.getData();
+            imagen.setImageURI(imagenUri);
+        }
+        else if(requestCode == 1 && resultCode == RESULT_OK && data !=null){
+            Bundle bundle = data.getExtras();
+
+            Bitmap foto = (Bitmap) bundle.get("data");
+            imagen.setImageBitmap(foto);
+        }
+    }
+
+    //-----------------------------------------------------------------------------------------------------------
+
     public void registrarse(View v)
     {
         usuario = findViewById(R.id.usuario);
@@ -135,79 +183,100 @@ public class Registrarse extends AppCompatActivity {
         setCedulaC(cedula.getText().toString());
         setClaveC(clave.getText().toString());
         setRepetirClaveC(repetirClave.getText().toString());
-
-        boolean bandera = true;
+        setBandera(true);
 
         if (getUsuarioC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(usuario,"Debes llenar este campo");
         }
         if (getNombreC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(nombre,"Debes llenar este campo");
         }
         if (getApellidoC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(apellido,"Debes llenar este campo");
         }
         if (getEmailC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(email,"Debes llenar este campo");
         }
         if (getCedulaC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(cedula,"Debes llenar este campo");
         }
         if (getClaveC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(clave,"Debes llenar este campo");
         }
         if (getRepetirClaveC().isEmpty())
         {
-            bandera = false;
+            setBandera(false);
             mostrarError(repetirClave,"Debes llenar este campo");
         }
         else
         {
             if(!getClaveC().equals(getRepetirClaveC()))
             {
-                bandera = false;
+                setBandera(false);
                 mostrarError(repetirClave,"No son iguales las contraseñas");
             }
         }
+        if(imagenUri == null)
+        {
+            setBandera(false);
+            Toast.makeText(Registrarse.this,"Porfa Selecciona una imagen...",Toast.LENGTH_LONG).show();
+        }
 
-        if(bandera == true)
+        if(getBandera())
         {
             firebaseAuth = FirebaseAuth.getInstance();
             firebaseDatabase = FirebaseDatabase.getInstance();
-            databaseReference = firebaseDatabase.getReference("Usuarios");
+            firebaseAuth.createUserWithEmailAndPassword(emailC,claveC);
 
-            firebaseAuth.createUserWithEmailAndPassword(emailC,claveC).addOnCompleteListener(new OnCompleteListener<AuthResult>()
-            {
+            StorageReference archivo = storageReference.child(getUsuarioC()).child("ImagenPerfil");
+            archivo.putFile(imagenUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task)
-                {
-                    if(task.isSuccessful())
-                    {
-                        UsuarioAux usuarioAux = new UsuarioAux(getUsuarioC(),getNombreC(),getApellidoC(),getEmailC(),getCedulaC(),getClaveC(),getLatitudC(),getLongitudC());
-                        databaseReference.child(getUsuarioC()).setValue(usuarioAux);
-                        Toast.makeText(Registrarse.this,"Usuario Registrado con exito en realtime database",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(Registrarse.this,Home.class);
-                        startActivity(intent);
-                    }
-                    else
-                    {
-                        task.getResult();
-                        Toast.makeText(Registrarse.this,task.getResult().toString(),Toast.LENGTH_LONG).show();
-//                      Log.i(task.getResult().toString());
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    archivo.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri)
+                        {
+                            databaseReference = firebaseDatabase.getReference("Usuarios");
+                            UsuarioAux usuarioAux = new UsuarioAux( getUsuarioC(),
+                                                                    getNombreC(),
+                                                                    getApellidoC(),
+                                                                    getEmailC(),
+                                                                    getCedulaC(),
+                                                                    getClaveC(),
+                                                                    getLatitudC(),
+                                                                    getLongitudC(),
+                                                                    uri.toString());
 
-                    }
+                            databaseReference.child(getUsuarioC()).setValue(usuarioAux);
+                            Toast.makeText(Registrarse.this,"Usuario Registrado",Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(Registrarse.this,Home.class);
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+//                progressBar.setVisibility(View.VISIBLE);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+//                progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(Registrarse.this,"Error....",Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -219,46 +288,9 @@ public class Registrarse extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void permiso(){
-        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Toast.makeText(this, "Se requiere habilitar los permisos", Toast.LENGTH_SHORT).show();
-            }
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
-    }
-
-    public void escogerImagen(View v) {
-        Toast.makeText(v.getContext(), "Galeria", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICKER_REQUEST);
-    }
-    private void uploadFile(){
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        Uri file = Uri.fromFile(new File("path/to/images/image.jpg"));
-        StorageReference imageRef = mStorageRef.child("images/profile/userid/image.jpg");
-        imageRef.putFile(file)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-// Get a URL to the uploaded content
-                        Log.i("FBApp", "Succesfully upload image");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-// Handle unsuccessful uploads
-// ...
-                    }
-                });
-    }
-
+    //----------------------------------------------------------------------------------------------
+    // Getters y Setters
+    //----------------------------------------------------------------------------------------------
 
     public String getLatitudC() {
         return latitudC;
@@ -330,5 +362,13 @@ public class Registrarse extends AppCompatActivity {
 
     public void setRepetirClaveC(String repetirClaveC) {
         this.repetirClaveC = repetirClaveC;
+    }
+
+    public Boolean getBandera() {
+        return bandera;
+    }
+
+    public void setBandera(Boolean bandera) {
+        this.bandera = bandera;
     }
 }
