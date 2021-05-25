@@ -261,12 +261,12 @@ public class Registrarse extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-// Sign in success, update UI
+                                // Sign in success, update UI
                                 Log.d("", "signInWithEmail:success");
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 updateUI(user);
                             } else {
-// If sign in fails, display a message to the user.
+                                // If sign in fails, display a message to the user.
                                 Log.w("", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(Registrarse.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
@@ -286,14 +286,14 @@ public class Registrarse extends AppCompatActivity {
 
                             databaseReference = firebaseDatabase.getReference("Usuarios/"+getIdUsuario());
                             UsuarioAux usuarioAux = new UsuarioAux( getUsuarioC(),
-                                                                    getNombreC(),
-                                                                    getApellidoC(),
-                                                                    getEmailC(),
-                                                                    getCedulaC(),
-                                                                    getClaveC(),
-                                                                    getLatitudC(),
-                                                                    getLongitudC(),
-                                                                    uri.toString());
+                                    getNombreC(),
+                                    getApellidoC(),
+                                    getEmailC(),
+                                    getCedulaC(),
+                                    getClaveC(),
+                                    getLatitudC(),
+                                    getLongitudC(),
+                                    uri.toString());
 
                             databaseReference.setValue(usuarioAux);
                             Toast.makeText(Registrarse.this,"Usuario Registrado",Toast.LENGTH_LONG).show();

@@ -75,8 +75,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         database = FirebaseDatabase.getInstance();
         FirebaseUser usuario = mAuth.getCurrentUser();
         String id = usuario.getUid();
-        String prueba = usuario.getClass().getSimpleName();
-        System. out. println("Otro usuario prueba" + prueba);
         System. out. println("Usuario" + id);
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
         myRef.addValueEventListener(new ValueEventListener() {
@@ -88,6 +86,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                     System. out. println("Ahora aqui");
                     System. out. println("Latitud-------" + dataSnapshot.child("latitud").getValue().toString());
                     System. out. println("Longitud-------" + dataSnapshot.child("longitud").getValue().toString());
+
+                    LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()), Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
+                    mMap.addMarker(new MarkerOptions().position(ubi).title("Marker en Sidney"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(ubi));
+
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                    mMap.getUiSettings().setZoomGesturesEnabled(true);
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                    Marker mfBogota = mMap.addMarker(new MarkerOptions().position(ubi).
+                            title("Tu ubicacion")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 }
                 System. out. println("Y aqui");
             }
@@ -99,17 +109,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         });
         System. out. println("Latitud" + lat);
         System. out. println("Longitud" + lng);
-        LatLng ubi = new LatLng(lat[0], lng[0]);
-        mMap.addMarker(new MarkerOptions().position(ubi).title("Marker en Sidney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ubi));
 
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
-        Marker mfBogota = mMap.addMarker(new MarkerOptions().position(ubi).
-                title("Tu ubicacion")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
     }
 
     public void ubicaciones(){
