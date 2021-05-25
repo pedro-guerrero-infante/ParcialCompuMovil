@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         textoCorreo = findViewById(R.id.etCorreo);
         textoContraseña = findViewById(R.id.etContraseña);
         mAuth = FirebaseAuth.getInstance();
+
     }
 
     public void iniciarSesion(final View view) {
