@@ -27,8 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.EventListener;
-
 public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
     private FirebaseAuth mAuth;
@@ -36,12 +34,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     private DatabaseReference myRef;
     private String PATH_LOCATION = "locations";
     private GoogleMap mMap;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         mAuth = FirebaseAuth.getInstance();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -82,23 +80,23 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         System. out. println("Usuario" + id);
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
         myRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.exists()) {
-                                                lat[0] = Double.parseDouble(dataSnapshot.child("latitud").getValue().toString());
-                                                lng[0] = Double.parseDouble(dataSnapshot.child("longitud").getValue().toString());
-                                                System. out. println("Ahora aqui");
-                                                System. out. println("Latitud-------" + dataSnapshot.child("latitud").getValue().toString());
-                                                System. out. println("Longitud-------" + dataSnapshot.child("longitud").getValue().toString());
-                                            }
-                                            System. out. println("Y aqui");
-                                        }
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    lat[0] = Double.parseDouble(dataSnapshot.child("latitud").getValue().toString());
+                    lng[0] = Double.parseDouble(dataSnapshot.child("longitud").getValue().toString());
+                    System. out. println("Ahora aqui");
+                    System. out. println("Latitud-------" + dataSnapshot.child("latitud").getValue().toString());
+                    System. out. println("Longitud-------" + dataSnapshot.child("longitud").getValue().toString());
+                }
+                System. out. println("Y aqui");
+            }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        }
-                                    });
+            }
+        });
         System. out. println("Latitud" + lat);
         System. out. println("Longitud" + lng);
         LatLng ubi = new LatLng(lat[0], lng[0]);
@@ -135,4 +133,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

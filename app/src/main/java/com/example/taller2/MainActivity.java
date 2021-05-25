@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser currentUser){
         if(currentUser!=null){
             Intent intent = new Intent(getBaseContext(), Home.class);
-            intent.putExtra("user", currentUser.getEmail());
+            //intent.putExtra("email", currentUser.getEmail());
             startActivity(intent);
         } else {
             textoCorreo.setText("");

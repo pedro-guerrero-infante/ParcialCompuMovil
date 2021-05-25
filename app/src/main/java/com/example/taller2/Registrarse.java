@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -27,9 +28,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.taller2.Auxiliares.UsuarioAux;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 
 public class Registrarse extends AppCompatActivity {
 
+    private String idUsuario;
     private String usuarioC;
     private String nombreC;
     private String apellidoC;
@@ -163,6 +169,15 @@ public class Registrarse extends AppCompatActivity {
 
     //-----------------------------------------------------------------------------------------------------------
 
+    private void updateUI(FirebaseUser currentUser){
+        if(currentUser!=null){
+            setIdUsuario(currentUser.getUid());
+        } else {
+            email.setText("");
+            clave.setText("");
+        }
+    }
+
     public void registrarse(View v)
     {
         usuario = findViewById(R.id.usuario);
@@ -236,9 +251,29 @@ public class Registrarse extends AppCompatActivity {
 
         if(getBandera())
         {
-            firebaseAuth = FirebaseAuth.getInstance();
             firebaseDatabase = FirebaseDatabase.getInstance();
-            firebaseAuth.createUserWithEmailAndPassword(emailC,claveC);
+            firebaseAuth = FirebaseAuth.getInstance();
+
+            firebaseAuth.createUserWithEmailAndPassword(getEmailC(),getClaveC());
+            firebaseAuth.signInWithEmailAndPassword(getEmailC(), getClaveC())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+// Sign in success, update UI
+                                Log.d("", "signInWithEmail:success");
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                updateUI(user);
+                            } else {
+// If sign in fails, display a message to the user.
+                                Log.w("", "signInWithEmail:failure", task.getException());
+                                Toast.makeText(Registrarse.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI(null);
+                            }
+                        }
+                    });
 
             StorageReference archivo = storageReference.child(getUsuarioC()).child("ImagenPerfil");
             archivo.putFile(imagenUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -248,7 +283,8 @@ public class Registrarse extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri)
                         {
-                            databaseReference = firebaseDatabase.getReference("Usuarios");
+
+                            databaseReference = firebaseDatabase.getReference("Usuarios/"+getIdUsuario());
                             UsuarioAux usuarioAux = new UsuarioAux( getUsuarioC(),
                                                                     getNombreC(),
                                                                     getApellidoC(),
@@ -259,7 +295,7 @@ public class Registrarse extends AppCompatActivity {
                                                                     getLongitudC(),
                                                                     uri.toString());
 
-                            databaseReference.child(getUsuarioC()).setValue(usuarioAux);
+                            databaseReference.setValue(usuarioAux);
                             Toast.makeText(Registrarse.this,"Usuario Registrado",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(Registrarse.this,Home.class);
                             startActivity(intent);
@@ -370,5 +406,13 @@ public class Registrarse extends AppCompatActivity {
 
     public void setBandera(Boolean bandera) {
         this.bandera = bandera;
+    }
+
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }
