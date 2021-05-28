@@ -49,15 +49,18 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int itemClicked = item.getItemId();
-        if(itemClicked == R.id.menuLogOut)
-        {
+        if(itemClicked == R.id.menuLogOut) {
             mAuth.signOut();
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 
         }else if (itemClicked == R.id.menuSettings){
-            //Abrir actividad para configuración etc
+
+        }else if(itemClicked == R.id.menuUsuarios) {
+            Intent intent = new Intent(this, Usuarios.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

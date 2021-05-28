@@ -2,5 +2,6 @@
     <string name="app_name">Taller 2</string>
     <string name="menulogout"> Logout </string>
     <string name="menuDisponible"> Establecerse como disponible </string>
+    <string name="ListaUsuarios"> Lista de usuarios </string>
     <string name="title_activity_localizacion">Map</string>
 </resources>
