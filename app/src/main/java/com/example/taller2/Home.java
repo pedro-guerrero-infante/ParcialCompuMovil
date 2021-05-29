@@ -51,14 +51,14 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         int itemClicked = item.getItemId();
         if(itemClicked == R.id.menuLogOut) {
             mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(Home.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 
         }else if (itemClicked == R.id.menuSettings){
 
         }else if(itemClicked == R.id.menuUsuarios) {
-            Intent intent = new Intent(this, Usuarios.class);
+            Intent intent = new Intent(Home.this, Usuarios.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

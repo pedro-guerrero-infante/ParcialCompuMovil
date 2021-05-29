@@ -149,7 +149,6 @@ public class Registrarse extends AppCompatActivity {
         startActivityForResult(intent,1000);
 
     }
-
     //Este codigo es para seleccionar la imagen y que salga en la pantalla
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -166,9 +165,7 @@ public class Registrarse extends AppCompatActivity {
             imagen.setImageBitmap(foto);
         }
     }
-
     //-----------------------------------------------------------------------------------------------------------
-
     private void updateUI(FirebaseUser currentUser){
         if(currentUser!=null){
             setIdUsuario(currentUser.getUid());
@@ -283,7 +280,6 @@ public class Registrarse extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri)
                         {
-
                             databaseReference = firebaseDatabase.getReference("Usuarios/"+getIdUsuario());
                             UsuarioAux usuarioAux = new UsuarioAux( getUsuarioC(),
                                     getNombreC(),
