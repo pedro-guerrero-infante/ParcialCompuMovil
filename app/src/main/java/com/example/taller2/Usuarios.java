@@ -46,9 +46,9 @@ public class Usuarios extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey)
             {
-                if(!id.equalsIgnoreCase(dataSnapshot.getKey()))
+                UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
+                if(!id.equalsIgnoreCase(dataSnapshot.getKey()) && newPost.getActivo())
                 {
-                    UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
                     usuarios.add(newPost);
                 }
             }

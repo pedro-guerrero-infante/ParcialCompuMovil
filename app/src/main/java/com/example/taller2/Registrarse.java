@@ -281,7 +281,8 @@ public class Registrarse extends AppCompatActivity {
                         public void onSuccess(Uri uri)
                         {
                             databaseReference = firebaseDatabase.getReference("Usuarios/"+getIdUsuario());
-                            UsuarioAux usuarioAux = new UsuarioAux( getUsuarioC(),
+                            UsuarioAux usuarioAux = new UsuarioAux(
+                                    getUsuarioC(),
                                     getNombreC(),
                                     getApellidoC(),
                                     getEmailC(),

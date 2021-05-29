@@ -11,6 +11,7 @@ public class UsuarioAux
     private String latitud;
     private String longitud;
     private String foto;
+    private boolean activo;
 
     public UsuarioAux() {
 
@@ -26,6 +27,7 @@ public class UsuarioAux
         this.latitud = latitudP;
         this.longitud = longitudP;
         this.foto = fotoP;
+        this.activo = false;
     }
 
     public String getUsuario() {
@@ -98,5 +100,13 @@ public class UsuarioAux
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

@@ -1,12 +1,17 @@
 package com.example.taller2;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.example.taller2.Auxiliares.UsuarioAux;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,11 +21,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -38,6 +46,41 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         mAuth = FirebaseAuth.getInstance();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        String idUsuarioExtra = this.getIntent().getStringExtra("codigoUsuario");
+        if(idUsuarioExtra != null)
+        {
+            colocarMarcadorUsuario(idUsuarioExtra);
+        }
+    }
+
+    public void colocarMarcadorUsuario(String uidUsuario)
+    {
+        database = FirebaseDatabase.getInstance();
+
+        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(uidUsuario);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()),
+                            Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
+
+                    getmMap().addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("usuario")
+                            .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                    getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
+
+                    getmMap().moveCamera(CameraUpdateFactory.zoomTo(15));
+                    getmMap().getUiSettings().setZoomGesturesEnabled(true);
+                    getmMap().getUiSettings().setZoomControlsEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     @Override
@@ -56,7 +99,27 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             startActivity(intent);
 
         }else if (itemClicked == R.id.menuSettings){
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser usuario = mAuth.getCurrentUser();
+            String id = usuario.getUid();
+            myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
+                    if(dataSnapshot.exists())
+                    {
+                        boolean estado = (boolean) dataSnapshot.child("activo").getValue();
+                        if(estado == false) {
+                            myRef.child("activo").setValue(true);
+                            Toast.makeText(getBaseContext(), "Disponibilidad activada", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }else if(itemClicked == R.id.menuUsuarios) {
             Intent intent = new Intent(Home.this, Usuarios.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -67,7 +130,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        setmMap(googleMap);
         database = FirebaseDatabase.getInstance();
         FirebaseUser usuario = mAuth.getCurrentUser();
         String id = usuario.getUid();
@@ -80,12 +143,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                 {
                     LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()),
                             Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
-                    mMap.addMarker(new MarkerOptions().position(ubi).title("Tu ubicación"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(ubi));
+                    getmMap().addMarker(new MarkerOptions().position(ubi).title("Tu ubicación"));
+                    getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
 
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-                    mMap.getUiSettings().setZoomGesturesEnabled(true);
-                    mMap.getUiSettings().setZoomControlsEnabled(true);
+                    getmMap().moveCamera(CameraUpdateFactory.zoomTo(15));
+                    getmMap().getUiSettings().setZoomGesturesEnabled(true);
+                    getmMap().getUiSettings().setZoomControlsEnabled(true);
                 }
             }
 
@@ -112,9 +175,9 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                         LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitude").getValue().toString()),
                                                 Double.parseDouble(dataSnapshot.child("longitude").getValue().toString()));
 
-                        mMap.addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("name")
+                        getmMap().addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("name")
                                 .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(ubi));
+                        getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
                     }
                 }
                 @Override
@@ -125,10 +188,11 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    public String getEmail() {
-        return email;
+    public GoogleMap getmMap() {
+        return mMap;
     }
-    public void setEmail(String email) {
-        this.email = email;
+
+    public void setmMap(GoogleMap mMap) {
+        this.mMap = mMap;
     }
 }
