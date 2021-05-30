@@ -109,4 +109,6 @@ public class UsuarioAux
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
+
+
 }
