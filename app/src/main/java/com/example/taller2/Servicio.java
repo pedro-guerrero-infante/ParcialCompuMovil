@@ -31,8 +31,10 @@ public class Servicio extends JobIntentService {
     private static final int JOB_ID = 12;
     private static String CHANNEL_ID = "Notificacion";
     private int notificationId = 0;
+    private static String idUsuarioDestino;
 
-    public static void enqueueWork(Context context, Intent intent){
+    public static void enqueueWork(Context context, Intent intent, String idUsuarioDestinoP){
+        setIdUsuarioDestino(idUsuarioDestinoP);
         enqueueWork(context, Servicio.class, JOB_ID, intent);
     }
 
@@ -63,6 +65,7 @@ public class Servicio extends JobIntentService {
     }
 
     public void crearNotificacion(){
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
         mBuilder.setSmallIcon(R.drawable.noticon);
         mBuilder.setContentTitle("Tienes un nueva notificacion");
@@ -71,7 +74,8 @@ public class Servicio extends JobIntentService {
         mBuilder.setLights(Color.MAGENTA, 1000, 1000);
         mBuilder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000});
 
-        Intent primerIntent = new Intent(this, MainActivity.class);
+        Intent primerIntent = new Intent(this, Home.class);
+        primerIntent.putExtra("codigoUsuario",getIdUsuarioDestino());
         primerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent peIntent = PendingIntent.getActivity(this, 0, primerIntent, 0);
         mBuilder.setContentIntent(peIntent);
@@ -79,5 +83,13 @@ public class Servicio extends JobIntentService {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, mBuilder.build());
+    }
+
+    public static String getIdUsuarioDestino() {
+        return idUsuarioDestino;
+    }
+
+    public static void setIdUsuarioDestino(String idUsuarioDestino) {
+        Servicio.idUsuarioDestino = idUsuarioDestino;
     }
 }

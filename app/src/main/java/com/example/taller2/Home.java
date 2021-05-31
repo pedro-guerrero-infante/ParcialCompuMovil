@@ -65,7 +65,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
     private boolean imprimirNormal = true;
     private static ArrayList<UsuarioAux> listaUsuariosDisponibles;
-    private static final Double RADIUS_OF_EARTH_KM = 6.371;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +97,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                 {
                     listaUsuariosDisponibles.add(newPost);
                 }
-
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -149,24 +147,41 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                         {
                             perdido = usix;
                             listaUsuariosDisponibles.add(perdido);
-                            System.out.println("Perdido:--------------"+perdido);
                             break;
                         }
                     }
 
                     if(encontrado == true)
                     {
-                        mAuth = FirebaseAuth.getInstance();
-                        FirebaseUser usuario = mAuth.getCurrentUser();
-                        String id = usuario.getUid();
-                        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
+                        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+                        myRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                UsuarioAux u = snapshot.getValue(UsuarioAux.class);
+                                mAuth = FirebaseAuth.getInstance();
+                                FirebaseUser usuario = mAuth.getCurrentUser();
 
-                        if(!perdido.getUsuario().equalsIgnoreCase(myRef.child("usuario").toString()))
-                        {
-                            System.out.println("myRef:--------------"+myRef.child("usuario").toString());
-                            Intent intent = new Intent(Home.this, MainActivity.class);
-                            Servicio.enqueueWork(Home.this, intent);
-                        }
+                                if(u.getEmail().equalsIgnoreCase(listaUsuariosDisponibles.get(listaUsuariosDisponibles.size() - 1).getEmail())) {
+                                    if (!listaUsuariosDisponibles.get(listaUsuariosDisponibles.size() - 1).getEmail().
+                                            equalsIgnoreCase(usuario.getEmail())) {
+                                        Intent intent = new Intent(Home.this, MainActivity.class);
+                                        Servicio.enqueueWork(Home.this, intent, snapshot.getKey());
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            }
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                            }
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
                     }
                 }
             }
@@ -222,7 +237,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             public void onProviderEnabled(String provider) {}
             public void onProviderDisabled(String provider){}
         };
-
         permissionLocation1 = ContextCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
     }
@@ -255,7 +269,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             });
             n++;
         }
-
     }
 
     public void colocarMarcadorUsuario(String uidUsuario)
@@ -268,8 +281,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists())
                 {
-                    LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()),
-                            Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
+                    setLatitud2(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()));
+                    setLongitud2(Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
+
+                    LatLng ubi = new LatLng( getLatitud2(),getLongitud2());
 
                     if (getOtraMarca() != null) {
                         getOtraMarca().remove();
@@ -279,14 +294,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                             .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));
                     getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
 
-                    Double lat1 = getLatitud1();
-                    Double lng1 = getLongitud1();
-                    Double lat2 = getLatitud2();
-                    Double lng2 = getLongitud2();
-
-                    Double resultado = distance(lat1, lng1, lat2, lng2);
+                    Double resultado = distance(getLatitud1(), getLongitud1(), getLatitud2(), getLongitud2());
                     Toast.makeText(getBaseContext(), "La distancia entre ustedes dos es de: "+ resultado + "Km", Toast.LENGTH_SHORT).show();
-                    System.out.println("Distancia:" + resultado);
                 }
             }
 
@@ -305,10 +314,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int itemClicked = item.getItemId();
-       mAuth = FirebaseAuth.getInstance();
-       FirebaseUser user = mAuth.getCurrentUser();
-       String idU = user.getUid();
-       myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String idU = user.getUid();
+        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
+
         if(itemClicked == R.id.menuLogOut) {
             mAuth.signOut();
             Intent intent = new Intent(Home.this, MainActivity.class);
@@ -316,10 +327,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             startActivity(intent);
 
         }else if (itemClicked == R.id.menuSettings){
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser usuario = mAuth.getCurrentUser();
-            String id = usuario.getUid();
-            myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
+
+            myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -363,7 +372,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double result = RADIUS_OF_EARTH_KM * c;
+        double result = 6371 * c;
         return Math.round(result*100.0)/100.0;
     }
 

@@ -92,7 +92,6 @@ public class AdaptadorUsuarios extends BaseAdapter {
                         UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
                         if(newPost.getUsuario().equalsIgnoreCase(usuario.getUsuario()))
                         {
-                            System.out.println("SSSSSSSSSSXXXXXXXXXXXXXXx: "+dataSnapshot.getKey());
                             setId(dataSnapshot.getKey());
                             intent.putExtra("codigoUsuario",getId());
                             context.startActivity(intent);
