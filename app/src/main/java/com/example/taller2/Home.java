@@ -84,13 +84,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
         mirarUsuarios();
         sacarUsuarios();
-
-        String idUsuarioExtraX2 = this.getIntent().getStringExtra("codigoUsuarioX2");
-        if (idUsuarioExtraX2 != null) {
-            System.out.println("Codigo llegando del servicio: "+idUsuarioExtraX2);
-            setIdOtroUsuario(idUsuarioExtraX2);
-            colocarMarcadorUsuario(getIdOtroUsuario());
-        }
     }
 
     public void sacarUsuarios()
@@ -236,6 +229,29 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                             setZoom(15);
                             getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
                         }
+
+                        Toast.makeText(getBaseContext(), "La distancia entre ustedes dos es de: "+ getDiferencia() + "Km", Toast.LENGTH_SHORT).show();
+
+                        if(getDiferencia() > 100)
+                        {
+                            setZoom(7);
+                            getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                        }
+                        else if( getDiferencia() > 50)
+                        {
+                            setZoom(10);
+                            getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                        }
+                        else if( getDiferencia() > 25)
+                        {
+                            setZoom(15);
+                            getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                        }
+                        else
+                        {
+                            setZoom(18);
+                            getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                        }
                     }
                     n++;
                 }
@@ -371,12 +387,19 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         setmMap(googleMap);
         sacarUbicacion();
+
         String idUsuarioExtra = this.getIntent().getStringExtra("codigoUsuario");
         if (idUsuarioExtra != null) {
             setIdOtroUsuario(idUsuarioExtra);
             colocarMarcadorUsuario(getIdOtroUsuario());
         }
 
+        String idUsuarioExtraX2 = this.getIntent().getStringExtra("codigoUsuarioX2");
+        if (idUsuarioExtraX2 != null) {
+            System.out.println("Codigo llegando del servicio: "+idUsuarioExtraX2);
+            setIdOtroUsuario(idUsuarioExtraX2);
+            colocarMarcadorUsuario(getIdOtroUsuario());
+        }
     }
 
     public double distance(double lat1, double long1, double lat2, double long2) {

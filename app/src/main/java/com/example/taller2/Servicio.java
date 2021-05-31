@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class Servicio extends JobIntentService {
     private static final int JOB_ID = 12;
     private static String CHANNEL_ID = "Notificacion";
-    private int notificationId = 150;
+    private int notificationId = 0;
     private static String idUsuarioDestino;
 
     public static void enqueueWork(Context context, Intent intent, String idUsuarioDestinoP){
@@ -76,7 +76,7 @@ public class Servicio extends JobIntentService {
         mBuilder.setLights(Color.MAGENTA, 1000, 1000);
         mBuilder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000});
 
-        Intent primerIntent = new Intent(this, Home.class);
+        Intent primerIntent = new Intent(this, Usuarios.class);
         System.out.println("Codigo dentro de la notificacion "+getIdUsuarioDestino());
         primerIntent.putExtra("codigoUsuarioX2",getIdUsuarioDestino());
 

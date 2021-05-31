@@ -34,7 +34,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".Home" android:launchMode="singleTop" android:excludeFromRecents="true"/>
+        <activity android:name=".Home"/>
         <activity android:name=".Registrarse" />
         <activity android:name=".MainActivity">
 

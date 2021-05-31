@@ -32,6 +32,16 @@ public class Usuarios extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuarios);
+
+        String idUsuarioExtraX2 = this.getIntent().getStringExtra("codigoUsuarioX2");
+        if (idUsuarioExtraX2 != null) {
+            System.out.println("Codigo llegando del servicio usuarios: "+idUsuarioExtraX2);
+
+            Intent intent = new Intent(this, Home.class);
+            intent.putExtra("codigoUsuarioX2",idUsuarioExtraX2);
+            this.startActivity(intent);
+        }
+
         subirUsuarios();
     }
 
