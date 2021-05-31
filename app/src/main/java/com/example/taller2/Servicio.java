@@ -30,11 +30,12 @@ import java.util.ArrayList;
 public class Servicio extends JobIntentService {
     private static final int JOB_ID = 12;
     private static String CHANNEL_ID = "Notificacion";
-    private int notificationId = 0;
+    private int notificationId = 150;
     private static String idUsuarioDestino;
 
     public static void enqueueWork(Context context, Intent intent, String idUsuarioDestinoP){
         setIdUsuarioDestino(idUsuarioDestinoP);
+        System.out.println("Codigo en el enqueueWork: "+getIdUsuarioDestino());
         enqueueWork(context, Servicio.class, JOB_ID, intent);
     }
 
@@ -43,6 +44,7 @@ public class Servicio extends JobIntentService {
         try {
                 createNotificationChannel();
                 crearNotificacion();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -75,9 +77,11 @@ public class Servicio extends JobIntentService {
         mBuilder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000});
 
         Intent primerIntent = new Intent(this, Home.class);
-        primerIntent.putExtra("codigoUsuario",getIdUsuarioDestino());
-        primerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent peIntent = PendingIntent.getActivity(this, 0, primerIntent, 0);
+        System.out.println("Codigo dentro de la notificacion "+getIdUsuarioDestino());
+        primerIntent.putExtra("codigoUsuarioX2",getIdUsuarioDestino());
+
+        primerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent peIntent = PendingIntent.getActivity(this, notificationId, primerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(peIntent);
         mBuilder.setAutoCancel(true);
 

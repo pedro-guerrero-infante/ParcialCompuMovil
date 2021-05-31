@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -39,18 +40,16 @@ public class Usuarios extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser usuario = mAuth.getCurrentUser();
         String id = usuario.getUid();
-
-        usuarios = new ArrayList<UsuarioAux>();
+        setUsuarios(new ArrayList<UsuarioAux>());
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey)
             {
                 UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
-                System.out.println("Algo de usuario: " +newPost);
                 if(!id.equalsIgnoreCase(dataSnapshot.getKey()) && newPost.getActivo())
                 {
-                    usuarios.add(newPost);
+                    getUsuarios().add(newPost);
                 }
             }
             @Override

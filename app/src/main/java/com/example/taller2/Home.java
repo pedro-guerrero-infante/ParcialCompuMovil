@@ -62,6 +62,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     private double latitud2;
     private double longitud1;
     private double longitud2;
+    private double diferencia;
+    private int zoom;
 
     private boolean imprimirNormal = true;
     private static ArrayList<UsuarioAux> listaUsuariosDisponibles;
@@ -82,6 +84,13 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
         mirarUsuarios();
         sacarUsuarios();
+
+        String idUsuarioExtraX2 = this.getIntent().getStringExtra("codigoUsuarioX2");
+        if (idUsuarioExtraX2 != null) {
+            System.out.println("Codigo llegando del servicio: "+idUsuarioExtraX2);
+            setIdOtroUsuario(idUsuarioExtraX2);
+            colocarMarcadorUsuario(getIdOtroUsuario());
+        }
     }
 
     public void sacarUsuarios()
@@ -117,10 +126,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     {
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
         myRef.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 ArrayList<UsuarioAux> usuarios = new ArrayList<UsuarioAux>();
                 for (DataSnapshot singleUser : snapshot.getChildren()) {
                     UsuarioAux user = singleUser.getValue(UsuarioAux.class);
@@ -129,10 +136,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                     }
                 }
 
-                if(usuarios.size() > listaUsuariosDisponibles.size())
-                {
+                System.out.println("TamListaSacada: "+usuarios.size()+" - TamListaGuardada: "+listaUsuariosDisponibles.size());
+                if(usuarios.size() > listaUsuariosDisponibles.size()){
                     boolean encontrado = true;
-                    UsuarioAux perdido = new UsuarioAux();
+                    UsuarioAux perdido;
                     for(UsuarioAux usix : usuarios)
                     {
                         encontrado = true;
@@ -160,11 +167,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                                 UsuarioAux u = snapshot.getValue(UsuarioAux.class);
                                 mAuth = FirebaseAuth.getInstance();
                                 FirebaseUser usuario = mAuth.getCurrentUser();
-
                                 if(u.getEmail().equalsIgnoreCase(listaUsuariosDisponibles.get(listaUsuariosDisponibles.size() - 1).getEmail())) {
                                     if (!listaUsuariosDisponibles.get(listaUsuariosDisponibles.size() - 1).getEmail().
                                             equalsIgnoreCase(usuario.getEmail())) {
-                                        Intent intent = new Intent(Home.this, MainActivity.class);
+                                        Intent intent = new Intent(Home.this, Servicio.class);
                                         Servicio.enqueueWork(Home.this, intent, snapshot.getKey());
                                     }
                                 }
@@ -185,10 +191,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -221,18 +225,21 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                         setLatitud1(Double.parseDouble("" + location.getLatitude()));
                         myRef.child("longitud").setValue(""+getLongitud1());
                         myRef.child("latitud").setValue(""+getLatitud1());
-
                         LatLng usuarioLL = new LatLng(getLatitud1(), getLongitud1());
                         if (getMiMarca() != null) {
                             getMiMarca().remove();
                         }
                         setMiMarca(getmMap().addMarker(new MarkerOptions().position(usuarioLL).title("Mi ubicación")));
-                        mMap.moveCamera(CameraUpdateFactory.zoomTo(18));
+                        getmMap().moveCamera(CameraUpdateFactory.newLatLng(usuarioLL));
+                        if(getZoom() == 0)
+                        {
+                            setZoom(15);
+                            getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                        }
                     }
                     n++;
                 }
             }
-
             public void onStatusChanged(String provider, int status, Bundle extras) {}
             public void onProviderEnabled(String provider) {}
             public void onProviderDisabled(String provider){}
@@ -253,14 +260,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                         System.out.println(dataSnapshot.child("latitude").getValue().toString());
                         System.out.println(dataSnapshot.child("longitude").getValue().toString());
                         System.out.println(dataSnapshot.child("name").getValue().toString());
-
-
                         LatLng ubi = new LatLng(Double.parseDouble(dataSnapshot.child("latitude").getValue().toString()),
                                 Double.parseDouble(dataSnapshot.child("longitude").getValue().toString()));
-
                         getmMap().addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("name")
                                 .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                        getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
                     }
                 }
                 @Override
@@ -274,7 +277,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     public void colocarMarcadorUsuario(String uidUsuario)
     {
         database = FirebaseDatabase.getInstance();
-
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(uidUsuario);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -283,22 +285,38 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
                 {
                     setLatitud2(Double.parseDouble(dataSnapshot.child("latitud").getValue().toString()));
                     setLongitud2(Double.parseDouble(dataSnapshot.child("longitud").getValue().toString()));
-
                     LatLng ubi = new LatLng( getLatitud2(),getLongitud2());
-
                     if (getOtraMarca() != null) {
                         getOtraMarca().remove();
                     }
-
                     setOtraMarca(getmMap().addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("usuario")
                             .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));
                     getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
+                    setDiferencia(distance(getLatitud1(), getLongitud1(), getLatitud2(), getLongitud2()));
+                    Toast.makeText(getBaseContext(), "La distancia entre ustedes dos es de: "+ getDiferencia() + "Km", Toast.LENGTH_SHORT).show();
 
-                    Double resultado = distance(getLatitud1(), getLongitud1(), getLatitud2(), getLongitud2());
-                    Toast.makeText(getBaseContext(), "La distancia entre ustedes dos es de: "+ resultado + "Km", Toast.LENGTH_SHORT).show();
+                    if(getDiferencia() > 100)
+                    {
+                        setZoom(7);
+                        getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                    }
+                    else if( getDiferencia() > 50)
+                    {
+                        setZoom(10);
+                        getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                    }
+                    else if( getDiferencia() > 25)
+                    {
+                        setZoom(15);
+                        getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                    }
+                    else
+                    {
+                        setZoom(18);
+                        getmMap().moveCamera(CameraUpdateFactory.zoomTo(getZoom()));
+                    }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -314,20 +332,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int itemClicked = item.getItemId();
-
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         String idU = user.getUid();
         myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
-
         if(itemClicked == R.id.menuLogOut) {
             mAuth.signOut();
             Intent intent = new Intent(Home.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-
         }else if (itemClicked == R.id.menuSettings){
-
             myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -357,12 +371,12 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         setmMap(googleMap);
         sacarUbicacion();
-
         String idUsuarioExtra = this.getIntent().getStringExtra("codigoUsuario");
         if (idUsuarioExtra != null) {
             setIdOtroUsuario(idUsuarioExtra);
             colocarMarcadorUsuario(getIdOtroUsuario());
         }
+
     }
 
     public double distance(double lat1, double long1, double lat2, double long2) {
@@ -375,7 +389,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         double result = 6371 * c;
         return Math.round(result*100.0)/100.0;
     }
-
 
     public GoogleMap getmMap() {
         return mMap;
@@ -447,5 +460,21 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
     public void setOtraMarca(Marker otraMarca) {
         this.otraMarca = otraMarca;
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        this.zoom = zoom;
+    }
+
+    public double getDiferencia() {
+        return diferencia;
+    }
+
+    public void setDiferencia(double diferencia) {
+        this.diferencia = diferencia;
     }
 }
