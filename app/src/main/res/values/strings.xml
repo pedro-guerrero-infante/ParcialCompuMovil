@@ -3,5 +3,6 @@
     <string name="menulogout"> Logout </string>
     <string name="menuDisponible"> Establecerse como disponible </string>
     <string name="ListaUsuarios"> Lista de usuarios </string>
+    <string name="menuLista">Usuarios disponibles</string>
     <string name="title_activity_localizacion">Map</string>
 </resources>

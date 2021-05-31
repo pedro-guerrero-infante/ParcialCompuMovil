@@ -9,5 +9,5 @@
         android:title="@string/menuDisponible" />
     <item
         android:id="@+id/menuUsuarios"
-        android:title="@string/ListaUsuarios" />
+        android:title="Usuarios disponibles" />
 </menu>

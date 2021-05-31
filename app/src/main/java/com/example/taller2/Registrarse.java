@@ -54,6 +54,7 @@ public class Registrarse extends AppCompatActivity {
     private String repetirClaveC;
     private String latitudC;
     private String longitudC;
+    private boolean sesionAbiertaC;
 
     private EditText usuario;
     private EditText nombre;
@@ -195,6 +196,7 @@ public class Registrarse extends AppCompatActivity {
         setCedulaC(cedula.getText().toString());
         setClaveC(clave.getText().toString());
         setRepetirClaveC(repetirClave.getText().toString());
+        //setSesionAbiertaC(true);
         setBandera(true);
 
         if (getUsuarioC().isEmpty())
@@ -411,5 +413,13 @@ public class Registrarse extends AppCompatActivity {
 
     public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public boolean getSesionAbiertaC() {
+        return sesionAbiertaC;
+    }
+
+    public void setSesionAbiertaC(boolean sesionAbiertaC) {
+        this.sesionAbiertaC = sesionAbiertaC;
     }
 }

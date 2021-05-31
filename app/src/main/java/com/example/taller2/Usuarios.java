@@ -47,6 +47,7 @@ public class Usuarios extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey)
             {
                 UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
+                System.out.println("Algo de usuario: " +newPost);
                 if(!id.equalsIgnoreCase(dataSnapshot.getKey()) && newPost.getActivo())
                 {
                     usuarios.add(newPost);

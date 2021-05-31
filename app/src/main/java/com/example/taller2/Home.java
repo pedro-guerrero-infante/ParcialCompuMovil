@@ -4,15 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -57,6 +64,8 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     private double longitud2;
 
     private boolean imprimirNormal = true;
+    private static ArrayList<UsuarioAux> listaUsuariosDisponibles;
+    private static final Double RADIUS_OF_EARTH_KM = 6.371;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +80,102 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             setImprimirNormal(false);
             imprimirNormal();
         }
+
+        mirarUsuarios();
+        sacarUsuarios();
+    }
+
+    public void sacarUsuarios()
+    {
+        listaUsuariosDisponibles = new ArrayList<UsuarioAux>();
+        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey)
+            {
+                UsuarioAux newPost = dataSnapshot.getValue(UsuarioAux.class);
+                if(newPost.getActivo())
+                {
+                    listaUsuariosDisponibles.add(newPost);
+                }
+
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    public void mirarUsuarios()
+    {
+        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+        myRef.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                ArrayList<UsuarioAux> usuarios = new ArrayList<UsuarioAux>();
+                for (DataSnapshot singleUser : snapshot.getChildren()) {
+                    UsuarioAux user = singleUser.getValue(UsuarioAux.class);
+                    if(user.getActivo()) {
+                        usuarios.add(user);
+                    }
+                }
+
+                if(usuarios.size() > listaUsuariosDisponibles.size())
+                {
+                    boolean encontrado = true;
+                    UsuarioAux perdido = new UsuarioAux();
+                    for(UsuarioAux usix : usuarios)
+                    {
+                        encontrado = true;
+                        for(UsuarioAux u : listaUsuariosDisponibles)
+                        {
+                            if(usix.getUsuario().equalsIgnoreCase(u.getUsuario()))
+                            {
+                                encontrado = false;
+                            }
+                        }
+                        if(encontrado == true)
+                        {
+                            perdido = usix;
+                            listaUsuariosDisponibles.add(perdido);
+                            System.out.println("Perdido:--------------"+perdido);
+                            break;
+                        }
+                    }
+
+                    if(encontrado == true)
+                    {
+                        mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser usuario = mAuth.getCurrentUser();
+                        String id = usuario.getUid();
+                        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(id);
+
+                        if(!perdido.getUsuario().equalsIgnoreCase(myRef.child("usuario").toString()))
+                        {
+                            System.out.println("myRef:--------------"+myRef.child("usuario").toString());
+                            Intent intent = new Intent(Home.this, MainActivity.class);
+                            Servicio.enqueueWork(Home.this, intent);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void sacarUbicacion()
@@ -122,23 +227,6 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
     }
 
-    private void sacarUbicacionDeOtroUsuario() {
-
-        myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(getIdOtroUsuario());
-        setLongitud2(Double.parseDouble(myRef.child("longitud").toString()));
-        setLatitud2(Double.parseDouble(myRef.child("latitud").toString()));
-
-        LatLng usuarioSS = new LatLng(getLatitud2(), getLongitud2());
-        if (getOtraMarca() != null) {
-            getOtraMarca().remove();
-        }
-        setOtraMarca(getmMap().addMarker(new MarkerOptions().position(usuarioSS).title("Ubicación "+myRef.child("usuario").toString())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(18));
-        getmMap().moveCamera(CameraUpdateFactory.newLatLng(usuarioSS));
-
-    }
-
     public void imprimirNormal() {
         int n = 0;
         while(n < 5)
@@ -167,6 +255,7 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
             });
             n++;
         }
+
     }
 
     public void colocarMarcadorUsuario(String uidUsuario)
@@ -188,14 +277,16 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
 
                     setOtraMarca(getmMap().addMarker(new MarkerOptions().position(ubi).title(dataSnapshot.child("usuario")
                             .getValue().toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));
-
-
                     getmMap().moveCamera(CameraUpdateFactory.newLatLng(ubi));
 
-                    Toast.makeText(getBaseContext(), "La distancia es: "+ distancia(   getLatitud1(),
-                            getLongitud1(),
-                            getLatitud2(),
-                            getLongitud2())+ "Km", Toast.LENGTH_SHORT).show();
+                    Double lat1 = getLatitud1();
+                    Double lng1 = getLongitud1();
+                    Double lat2 = getLatitud2();
+                    Double lng2 = getLongitud2();
+
+                    Double resultado = distance(lat1, lng1, lat2, lng2);
+                    Toast.makeText(getBaseContext(), "La distancia entre ustedes dos es de: "+ resultado + "Km", Toast.LENGTH_SHORT).show();
+                    System.out.println("Distancia:" + resultado);
                 }
             }
 
@@ -214,6 +305,10 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int itemClicked = item.getItemId();
+       mAuth = FirebaseAuth.getInstance();
+       FirebaseUser user = mAuth.getCurrentUser();
+       String idU = user.getUid();
+       myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(idU);
         if(itemClicked == R.id.menuLogOut) {
             mAuth.signOut();
             Intent intent = new Intent(Home.this, MainActivity.class);
@@ -261,17 +356,17 @@ public class Home extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    public double distancia(double lat1, double long1, double lat2, double long2) {
-
+    public double distance(double lat1, double long1, double lat2, double long2) {
         double latDistance = Math.toRadians(lat1 - lat2);
         double lngDistance = Math.toRadians(long1 - long2);
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double result = 6371 * c;
+        double result = RADIUS_OF_EARTH_KM * c;
         return Math.round(result*100.0)/100.0;
     }
+
 
     public GoogleMap getmMap() {
         return mMap;
